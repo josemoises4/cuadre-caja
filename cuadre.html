@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- Codificación de caracteres para admitir tildes, ñ, símbolos, etc -->
+    <meta charset="UTF-8">
+
+    <!-- Permite que la página sea responsive en móviles -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Título de la pestaña del navegador -->
+    <title>Cuadre de Caja - ARTIKA</title>
+
+    <!-- Enlace al archivo CSS externo -->
+    <link rel="stylesheet" href="cuadre.css">
+</head>
+<body>
+
+<!-- Contenedor general de toda la página -->
+<div class="container">
+
+    <!-- TABLA PRINCIPAL QUE CONTIENE TODO EL CUADRE -->
+    <table class="main-table">
+
+        <!-- FILA DE CABECERA -->
+        <tr class="header-row">
+
+            <!-- Datos del responsable y sede -->
+            <td colspan="2" class="header-left-cell">
+                <div class="header-item">
+                    <!-- Etiqueta -->
+                    <span class="label-box">RESPONSABLE:</span>
+
+                    <!-- Campo para ingresar el nombre del responsable -->
+                    <input type="text" class="input-field" placeholder="Nombre del responsable">
+                </div>
+
+                <div class="header-item">
+                    <span class="label-box">RUTA / SEDE</span>
+                    <input type="text" class="input-field">
+                </div>
+            </td>
+
+            <!-- Título central -->
+            <td colspan="2" class="header-center-cell">
+                <h1>CUADRE DE CAJA</h1>
+            </td>
+
+            <!-- Fecha y logo -->
+            <td colspan="2" class="header-right-cell header-logo-box">
+
+                <!-- Logo -->
+                <img src="img/artika-logo.png" class="logo-box" alt="Logo ARTIKA">
+
+                <!-- Fecha -->
+                <div class="fecha-box">
+                    <span>FECHA:</span>
+                    <span id="dia-semana"></span>
+                    <input type="date" id="fecha" class="fecha-input">
+                </div>
+
+
+            </td>
+
+        </tr>
+        <!-- FIN HEADER -->
+
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <tr>
+
+            <!-- COLUMNA IZQUIERDA -->
+            <td colspan="3" class="left-column">
+                <table class="inner-table">
+
+                    <!-- SECCIÓN DE VENTAS -->
+                    <tr>
+                        <!-- Encabezado lateral con rowspan para ocupar 4 filas -->
+                        <td class="green-header" rowspan="4">VENTAS</td>
+
+                        <!-- Descripción -->
+                        <td class="item-label">1. TOTAL</td>
+
+                        <!-- Campo de ingreso -->
+                        <td class="item-value">
+                            <input type="number" step="0.01" id="total-ventas">
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="item-label">2. FUERA DE RUTA</td>
+                        <td class="item-value">
+                            <input type="number" step="0.01" id="fuera-ruta">
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="item-label">3.</td>
+                        <td class="item-value">
+                            <input type="number" step="0.01" id="campo-3">
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="empty-cell">4.</td>
+                        <td class="item-value">
+                            <input type="number" step="0.01" id="campo-4">
+                        </td>
+                    </tr>
+                    <!-- FIN VENTAS -->
+
+
+                    <!-- PRODUCTOS NO DESPACHADOS -->
+                    <tr>
+                        <td colspan="2" class="yellow-header">
+                            PRODUCTOS NO DESPACHADOS
+                        </td>
+                        <td class="item-value">
+                            <input type="number" step="0.01" id="productos-no-desp">
+                        </td>
+                    </tr>
+
+
+                    <!-- DEVOLUCIONES / REBOTES -->
+                    <tr>
+                        <td colspan="2" class="yellow-header">
+                            DEVOLUCIONES / REBOTES
+                        </td>
+                        <td class="item-value">
+                            <input type="number" step="0.01" id="devoluciones">
+                        </td>
+                    </tr>
+
+
+                    <!-- DESCUENTO POR MERCADERÍA MALOGRADA -->
+                    <tr>
+                        <td colspan="2" class="yellow-header">
+                            DCTO MERCADERIA MALOGRADA
+                        </td>
+                        <td class="item-value">
+                            <input type="number" step="0.01" id="dcto-mercaderia">
+                        </td>
+                    </tr>
+
+
+                    <!-- SUBTOTAL DE VENTAS -->
+                    <tr class="green-row">
+                        <td colspan="2" class="green-header">SUBTOTAL</td>
+                        <td class="item-value-green">
+                            <!-- Resultado calculado con JS -->
+                            <span id="subtotal-ventas">0.00</span>
+                        </td>
+                    </tr>
+
+
+                    <!-- GASTOS OPERATIVOS -->
+                    <tr>
+                        <td class="white-header" rowspan="5">
+                            GASTOS OPERATIVOS
+                        </td>
+                        <td class="item-label">
+                            <input type="text" class="input-label" value="1.">
+                        </td>
+                        <td class="item-value">
+                            <input type="number" step="0.01" id="gasto-mov-1">
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="item-label"><input type="text" class="input-label" value="2."></td>
+                        <td class="item-value"><input type="number" step="0.01" id="gasto-mov-2"></td>
+                    </tr>
+
+                    <tr>
+                        <td class="item-label"><input type="text" class="input-label" value="3."></td>
+                        <td class="item-value"><input type="number" step="0.01" id="gasto-mov-3"></td>
+                    </tr>
+
+                    <tr>
+                        <td class="item-label"><input type="text" class="input-label" value="4."></td>
+                        <td class="item-value"><input type="number" step="0.01" id="gasto-mov-4"></td>
+                    </tr>
+
+                    <tr>
+                        <td class="item-label"><input type="text" class="input-label" value="5."></td>
+                        <td class="item-value"><input type="number" step="0.01" id="gasto-mov-5"></td>
+                    </tr>
+
+
+                    <!-- GASTOS OTROS -->
+                    <tr>
+                        <td class="white-header" rowspan="5">
+                            GASTOS OTROS
+                        </td>
+                        <td class="orange-label">COMBUSTIBLE</td>
+                        <td class="item-value"><input type="number" step="0.01" id="combustible"></td>
+                    </tr>
+
+                    <tr><td class="orange-label">BONO</td><td class="item-value"><input type="number" step="0.01" id="bono"></td></tr>
+                    <tr><td class="orange-label">PARQUEO</td><td class="item-value"><input type="number" step="0.01" id="parqueo"></td></tr>
+                    <tr><td class="orange-label">PASAJE</td><td class="item-value"><input type="number" step="0.01" id="pasaje"></td></tr>
+                    <tr><td class="orange-label">BAÑO</td><td class="item-value"><input type="number" step="0.01" id="bano"></td></tr>
+
+
+                    <!-- TOTAL DE GASTOS -->
+                    <tr class="yellow-row">
+                        <td colspan="2" class="yellow-header">TOTAL</td>
+                        <td class="item-value-yellow">
+                            <span id="total-gastos">0.00</span>
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+            <!-- FIN COLUMNA IZQUIERDA -->
+
+
+            <!-- COLUMNA DERECHA -->
+            <td colspan="3" class="right-column">
+                <table class="inner-table">
+
+                    <!-- EFECTIVO -->
+                    <tr>
+                        <td class="blue-header" colspan="2" rowspan="8">EFECTIVO</td>
+                        <td class="blue-label">BILLETES</td>
+                        <td class="blue-value">
+                            <input type="number" step="0.01" id="billetes">
+                        </td>
+                    </tr>
+
+                    <tr><td class="blue-label">S/.5</td><td class="blue-value"><input type="number" step="0.01" id="b5"></td></tr>
+                    <tr><td class="blue-label">S/.2</td><td class="blue-value"><input type="number" step="0.01" id="b2"></td></tr>
+                    <tr><td class="blue-label">S/.1</td><td class="blue-value"><input type="number" step="0.01" id="b1"></td></tr>
+                    <tr><td class="blue-label">S/.0.50</td><td class="blue-value"><input type="number" step="0.01" id="b050"></td></tr>
+                    <tr><td class="blue-label">S/.0.20</td><td class="blue-value"><input type="number" step="0.01" id="b020"></td></tr>
+                    <tr><td class="blue-label">S/.0.10</td><td class="blue-value"><input type="number" step="0.01" id="b010"></td></tr>
+
+                    <!-- SUBTOTAL EFECTIVO -->
+                    <tr>
+                        <td class="blue-label-subtotal">SUBTOTAL</td>
+                        <td class="blue-value-subtotal">
+                            <span id="subtotal-efectivo">0.00</span>
+                        </td>
+                    </tr>
+
+                    <!-- DEPÓSITOS -->
+                    <tr>
+                        <td colspan="2" class="orange-header" rowspan="4">
+                            DEPOSITO<br>A CTAS<br>M&S
+                        </td>
+                        <td class="orange-label">BCP / YAPE</td>
+                        <td class="orange-value">
+                            <input type="number" class="deposito-input" id="bcp-yape">
+                        </td>
+                    </tr>
+
+                    <tr><td class="orange-label">INTERBANK</td><td class="orange-value"><input type="number" class="deposito-input" id="interbank"></td></tr>
+                    <tr><td class="orange-label">BBVA</td><td class="orange-value"><input type="number" class="deposito-input" id="bbva"></td></tr>
+
+                    <!-- SUBTOTAL DEPÓSITOS -->
+                    <tr>
+                        <td class="orange-label-subtotal">SUBTOTAL</td>
+                        <td class="orange-value-subtotal">
+                            <span id="subtotal-deposito">0.00</span>
+                        </td>
+                    </tr>
+
+                    <!-- DEUDORES -->
+                    <tr><td colspan="3" class="orange-label"><input type="text" placeholder="Nombre del cliente" class="input-clean"></td><td class="orange-value"><input type="number" step="0.01" id="deudor1" class="input-clean"></td></tr>
+                    <tr><td colspan="3" class="orange-label"><input type="text" placeholder="Nombre del cliente" class="input-clean"></td><td class="orange-value"><input type="number" step="0.01" id="deudor2" class="input-clean"></td></tr>
+                    <tr><td colspan="3" class="orange-label"><input type="text" placeholder="Nombre del cliente" class="input-clean"></td><td class="orange-value"><input type="number" step="0.01" id="deudor3" class="input-clean"></td></tr>
+                    <tr><td colspan="3" class="orange-label"><input type="text" placeholder="Nombre del cliente" class="input-clean"></td><td class="orange-value"><input type="number" step="0.01" id="deudor4" class="input-clean"></td></tr>
+                    <tr><td colspan="3" class="orange-label"><input type="text" placeholder="Nombre del cliente" class="input-clean"></td><td class="orange-value"><input type="number" step="0.01" id="deudor5" class="input-clean"></td></tr>
+                    <tr><td colspan="3" class="orange-label"><input type="text" placeholder="Nombre del cliente" class="input-clean"></td><td class="orange-value"><input type="number" step="0.01" id="deudor6" class="input-clean"></td></tr>
+                    <tr><td colspan="3" class="orange-label"><input type="text" placeholder="Nombre del cliente" class="input-clean"></td><td class="orange-value"><input type="number" step="0.01" id="deudor7" class="input-clean"></td></tr>
+
+                    <!-- DIFERENCIA FINAL -->
+                    <tr id="resultado-row">
+                        <td colspan="3" id="resultado-label">DIFERENCIA</td>
+                        <td id="resultado-valor">
+                            <span id="resultado">S/ 0.00</span>
+                        </td>
+                    </tr>
+
+                    <!-- TOTAL FINAL -->
+                    <tr class="yellow-row-right">
+                        <td colspan="3" class="total-label">TOTAL</td>
+                        <td class="total-value">
+                            <span id="total-final">S/ 0.00</span>
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+            <!-- FIN COLUMNA DERECHA -->
+
+        </tr>
+        <!-- FIN CONTENIDO PRINCIPAL -->
+
+    </table>
+    <!-- FIN TABLA PRINCIPAL -->
+
+
+    <!-- BOTONES DE ACCIÓN -->
+    <div class="action-buttons-out">
+        <button type="button" id="btn-guardar">💾 GUARDAR</button>
+        <button type="button" id="btn-historial">📋 VER HISTORIAL</button>
+        <button type="button" id="btn-limpiar">🧹 LIMPIAR</button>
+    </div>
+
+
+    <!-- MODAL PARA HISTORIAL -->
+    <div id="modal-historial" class="modal-historial">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Historial de Cuadres</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+
+            <!-- Contenedor dinámico donde se cargan los registros -->
+            <div class="modal-body" id="lista-historial"></div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Archivo JavaScript principal -->
+<script src="cuadre.js"></script>
+
+<!-- Script para cargar la fecha actual automáticamente -->
+<script>
+    document.getElementById("fecha").value = new Date().toISOString().split('T')[0];
+</script>
+
+<script>
+    const fechaInput = document.getElementById("fecha");
+    const diaSpan = document.getElementById("dia-semana");
+
+    const hoy = new Date();
+    fechaInput.value = hoy.toISOString().split('T')[0];
+
+    const dias = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+    diaSpan.textContent = dias[hoy.getDay()];
+</script>
+
+</body>
+</html>
