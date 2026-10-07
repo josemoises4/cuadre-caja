@@ -76,8 +76,6 @@ body {
 
 /* Input del header */
 .input-field {
-    position: relative;
-    top: 4px;
     flex: 1;
     border: none;
     padding: 8px;
