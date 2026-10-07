@@ -32,6 +32,9 @@
 <!-- Contenedor general de toda la página -->
 <div class="container">
 
+    <div id="area-imprimir">
+
+    
     <!-- TABLA PRINCIPAL QUE CONTIENE TODO EL CUADRE -->
     <table class="main-table">
 
@@ -313,6 +316,8 @@
     </table>
     <!-- FIN TABLA PRINCIPAL -->
 
+    </div>
+     <!-- FIN ÁREA EXCLUSIVA PARA IMPRESIÓN -->
 
     <!-- BOTONES DE ACCIÓN -->
     <div class="action-buttons-out">
@@ -338,6 +343,9 @@
 
     </div>
 </div>
+<!--Vamos a usar html2canvas + jsPDF para convertir #area-imprimir en PDF desde el teléfono-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <!-- Archivo JavaScript principal -->
 <script src="cuadre.js"></script>
