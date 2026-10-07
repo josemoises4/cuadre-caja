@@ -556,7 +556,10 @@ document.getElementById("btn-imprimir").addEventListener("click", async () => {
             alto
         );
 
-        pdf.save("cuadre-caja.pdf");
+        const pdfBlob = pdf.output("blob");
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+
+        window.open(pdfUrl, "_blank");
 
     } catch (error) {
         console.error(error);
