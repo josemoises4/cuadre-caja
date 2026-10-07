@@ -1,20 +1,34 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <!-- Codificación de caracteres para admitir tildes, ñ, símbolos, etc -->
     <meta charset="UTF-8">
-
     <!-- Permite que la página sea responsive en móviles -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- Título de la pestaña del navegador -->
     <title>Cuadre de Caja - ARTIKA</title>
-
-    <!-- Enlace al archivo CSS externo -->
     <link rel="stylesheet" href="cuadre.css">
 </head>
 <body>
 
+    <div class="layout">
+
+        <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="logo-box">
+        <img src="img/artika-logo.png" alt="LOGO ARTIKA">
+    </div>
+
+    <ul class="user-list">
+        <li class="user-name has-submenu" id="btn-reparto">
+            REPARTO
+            <span class="arrow">▸</span>
+        </li>
+
+        <ul class="submenu" id="submenu-reparto">
+            <li class="submenu-item">PRODUCTOS</li>
+            <li class="submenu-item">CUADRE DIGITAL</li>
+        </ul>
+    </ul>
+    </div>
 <!-- Contenedor general de toda la página -->
 <div class="container">
 
@@ -305,6 +319,7 @@
         <button type="button" id="btn-guardar">💾 GUARDAR</button>
         <button type="button" id="btn-historial">📋 VER HISTORIAL</button>
         <button type="button" id="btn-limpiar">🧹 LIMPIAR</button>
+        <button type="button" id="btn-imprimir">🖨️ IMPRIMIR</button>
     </div>
 
 
@@ -321,6 +336,7 @@
         </div>
     </div>
 
+    </div>
 </div>
 
 <!-- Archivo JavaScript principal -->

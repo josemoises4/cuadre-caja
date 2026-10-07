@@ -500,3 +500,28 @@ window.addEventListener('click', (e) => {
     if (e.target === modal) modal.style.display = 'none';
 });
 
+const btnReparto = document.getElementById("btn-reparto");
+const submenu = document.getElementById("submenu-reparto");
+
+btnReparto.addEventListener("click", () => {
+    submenu.classList.toggle("open");
+    btnReparto.classList.toggle("open");
+});
+
+/*IMPRIMIR*/
+document.getElementById("btn-imprimir").addEventListener("click", async () => {
+    try {
+        const respuesta = await fetch("http://192.168.1.3:5000/health");
+
+        if (!respuesta.ok) {
+            throw new Error("El servidor respondió con error.");
+        }
+
+        const datos = await respuesta.json();
+
+        alert(`Servidor de impresión: ${datos.status}`);
+    } catch (error) {
+        console.error(error);
+        alert("No se pudo conectar con el servidor de impresión.");
+    }
+});

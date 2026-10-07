@@ -743,3 +743,108 @@ input[type=number]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 220px;
+    background: #1f3c88;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 15px;
+    font-family: 'Poppins', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.sidebar img {
+    width: 120px;
+}
+
+.user-list {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+     margin-top: 25px;
+}
+
+.user-name {
+    padding: 12px 15px;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+    font-size: 15px;                 /* Más grande */
+    font-weight: 700;               /* Negrita */
+    cursor: pointer;
+}
+
+.user-name:hover {
+    background: rgba(255,255,255,0.12);
+    padding-left: 24px;
+}
+
+
+.container {
+    flex: 1;
+    padding: 15px;
+}
+
+.has-submenu {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.arrow {
+    transition: transform 0.25s ease;
+}
+
+.submenu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background: rgba(255,255,255,0.05);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.submenu-item {
+    padding: 11px 28px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.submenu-item:hover {
+    background: rgba(255,255,255,0.12);
+    padding-left: 36px;
+}
+
+/* Estado activo */
+.submenu.open {
+    max-height: 300px;
+}
+
+.has-submenu.open .arrow {
+    transform: rotate(90deg);
+}
+
+/*BTN IMPRIMIR*/
+#btn-imprimir {
+    padding: 12px 28px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    background: #111827;
+    color: white;
+}
+
+#btn-imprimir:hover {
+    background: #374151;
+}
