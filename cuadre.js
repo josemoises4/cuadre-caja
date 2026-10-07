@@ -508,7 +508,6 @@ btnReparto.addEventListener("click", () => {
     btnReparto.classList.toggle("open");
 });
 
-/*IMPRIMIR*/
 /* IMPRIMIR */
 document.getElementById("btn-imprimir").addEventListener("click", async () => {
     try {
@@ -532,8 +531,8 @@ document.getElementById("btn-imprimir").addEventListener("click", async () => {
         const pageHeight = pdf.internal.pageSize.getHeight();
 
         const margen = 8;
-        const anchoDisponible = pageWidth - (margen * 2);
-        const altoDisponible = pageHeight - (margen * 2);
+        const anchoDisponible = pageWidth - margen * 2;
+        const altoDisponible = pageHeight - margen * 2;
 
         const proporcion = canvas.width / canvas.height;
 

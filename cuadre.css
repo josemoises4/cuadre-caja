@@ -848,3 +848,22 @@ input[type=number]::-webkit-outer-spin-button {
 #btn-imprimir:hover {
     background: #374151;
 }
+
+/*AREA IMPRIMIR*/
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    #area-imprimir,
+    #area-imprimir * {
+        visibility: visible;
+    }
+
+    #area-imprimir {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
+}
