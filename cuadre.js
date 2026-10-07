@@ -557,9 +557,40 @@ document.getElementById("btn-imprimir").addEventListener("click", async () => {
         );
 
         const pdfBlob = pdf.output("blob");
-        const pdfUrl = URL.createObjectURL(pdfBlob);
 
-        window.open(pdfUrl, "_blank");
+        const formData = new FormData();
+
+        formData.append(
+            "printer",
+            "EPSON2AB319 (L3350 Series)"
+        );
+
+        formData.append(
+            "pdf",
+            pdfBlob,
+            "cuadre-caja.pdf"
+        );
+
+        const respuesta = await fetch(
+            "http://192.168.1.3:5000/print",
+            {
+                method: "POST",
+                body: formData
+            }
+        );
+
+        if (!respuesta.ok) {
+            throw new Error(
+                "El PrintServer respondió con error: " +
+                respuesta.status
+            );
+        }
+
+        const resultado = await respuesta.json();
+
+        console.log(resultado);
+
+        alert("PDF enviado a la impresora correctamente.");
 
     } catch (error) {
         console.error(error);
