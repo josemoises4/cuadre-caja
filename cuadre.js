@@ -509,30 +509,58 @@ btnReparto.addEventListener("click", () => {
 });
 
 /*IMPRIMIR*/
+/* IMPRIMIR */
 document.getElementById("btn-imprimir").addEventListener("click", async () => {
     try {
-        const respuesta = await fetch("http://192.168.1.3:5000/print", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                printer: "EPSON2AB319 (L3350 Series)",
-                file: "C:\\PrintServer\\prueba.pdf"
-            })
+        const area = document.getElementById("area-imprimir");
+
+        const canvas = await html2canvas(area, {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: "#ffffff"
         });
 
-        const datos = await respuesta.json();
+        const { jsPDF } = window.jspdf;
 
-        if (!respuesta.ok) {
-            throw new Error(datos.error || "Error al imprimir.");
+        const pdf = new jsPDF({
+            orientation: "landscape",
+            unit: "mm",
+            format: "a4"
+        });
+
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+
+        const margen = 8;
+        const anchoDisponible = pageWidth - (margen * 2);
+        const altoDisponible = pageHeight - (margen * 2);
+
+        const proporcion = canvas.width / canvas.height;
+
+        let ancho = anchoDisponible;
+        let alto = ancho / proporcion;
+
+        if (alto > altoDisponible) {
+            alto = altoDisponible;
+            ancho = alto * proporcion;
         }
 
-        alert("Impresión enviada correctamente.");
-        console.log(datos);
+        const x = (pageWidth - ancho) / 2;
+        const y = (pageHeight - alto) / 2;
+
+        pdf.addImage(
+            canvas.toDataURL("image/png"),
+            "PNG",
+            x,
+            y,
+            ancho,
+            alto
+        );
+
+        pdf.save("cuadre-caja.pdf");
 
     } catch (error) {
         console.error(error);
-        alert("Error al imprimir: " + error.message);
+        alert("Error al generar el PDF: " + error.message);
     }
 });
