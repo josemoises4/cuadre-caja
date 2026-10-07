@@ -511,17 +511,28 @@ btnReparto.addEventListener("click", () => {
 /*IMPRIMIR*/
 document.getElementById("btn-imprimir").addEventListener("click", async () => {
     try {
-        const respuesta = await fetch("http://192.168.1.3:5000/health");
-
-        if (!respuesta.ok) {
-            throw new Error("El servidor respondió con error.");
-        }
+        const respuesta = await fetch("http://192.168.1.3:5000/print", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                printer: "EPSON2AB319 (L3350 Series)",
+                file: "C:\\PrintServer\\prueba.pdf"
+            })
+        });
 
         const datos = await respuesta.json();
 
-        alert(`Servidor de impresión: ${datos.status}`);
+        if (!respuesta.ok) {
+            throw new Error(datos.error || "Error al imprimir.");
+        }
+
+        alert("Impresión enviada correctamente.");
+        console.log(datos);
+
     } catch (error) {
         console.error(error);
-        alert("No se pudo conectar con el servidor de impresión.");
+        alert("Error al imprimir: " + error.message);
     }
 });
