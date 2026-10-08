@@ -306,3 +306,52 @@ body {
   height: auto;
   display: block;
 }
+
+/* =========================
+   DATOS DEL CLIENTE (pantalla)
+========================= */
+.datos-cliente {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.campo {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  background: #fff;
+  border: 1px solid #000;
+}
+.campo-dni { flex: 0 0 38%; }
+.campo .etiqueta {
+  display: flex;
+  align-items: center;
+  padding: 6px 8px;
+  background: #9fc5e8;
+  border-right: 1px solid #000;
+  font-weight: bold;
+}
+.campo input {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 8px;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+.campo input::placeholder { font-weight: normal; text-transform: none; color: #999; }
+.campo input:focus { outline: 2px solid #3d85c6; background: #eef6ff; }
+
+@media (max-width: 480px) {
+  .datos-cliente { flex-direction: column; gap: 6px; }
+  .campo-dni { flex: 1; }
+}
+
+/* =========================
+   TICKET: datos de empresa y cliente
+========================= */
+.tk-datos { margin-top: 4px; font-size: 9px; line-height: 1.35; }
+.tk-cliente { margin: 8px 0 0; font-size: 10px; line-height: 1.4; }

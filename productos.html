@@ -37,6 +37,19 @@
     <!-- CONTENEDOR GENERAL -->
     <div class="container">
       <main class="contenedor">
+
+        <!-- DATOS DEL CLIENTE -->
+        <div class="datos-cliente">
+          <label class="campo">
+            <span class="etiqueta">CLIENTE</span>
+            <input type="text" id="cliente" placeholder="Nombre del cliente" autocomplete="off">
+          </label>
+          <label class="campo campo-dni">
+            <span class="etiqueta">DNI</span>
+            <input type="text" id="dni" inputmode="numeric" maxlength="8" placeholder="00000000" autocomplete="off">
+          </label>
+        </div>
+
         <table class="tabla">
           <thead>
             <tr>
@@ -374,8 +387,19 @@
       <img id="tk-logo" class="tk-logo" src="img/artika-logo.png" alt="ARTIKA">
       <div id="tk-logo-texto" class="tk-tit" hidden>ARTIKA</div>
       <div class="tk-emp">INVERSIONES M &amp; S LIMA SUR S.A.C.</div>
+      <div class="tk-datos">
+        RUC: 20605018581<br>
+        URB. SAN JUAN CAL. HERACLIDES CABRERA NRO 1123<br>
+        LIMA - LIMA - SAN JUAN DE MIRAFLORES<br>
+        Teléfono: 947 303 228
+      </div>
       <div class="tk-tit">NOTA DE PEDIDO</div>
-      <div class="tk-sub">Documento interno · No es comprobante de pago</div>
+      <div class="tk-sub">Documento interno</div>
+    </div>
+
+    <div class="tk-cliente">
+      <div>CLIENTE: <span id="tk-cliente"></span></div>
+      <div>DNI: <span id="tk-dni"></span></div>
     </div>
 
     <div class="tk-fecha">Fecha: <span id="tk-fecha"></span></div>
@@ -394,7 +418,7 @@
 
     <div class="tk-unid"><span id="tk-unid">0</span> Unid(s)</div>
     <div class="tk-total">Total: <span id="tk-total">S/.0,00</span></div>
-    <div class="tk-nota">Este documento no tiene valor tributario</div>
+    <div class="tk-nota">¡GRACIAS POR SU COMPRA!</div>
 
   </div>
 

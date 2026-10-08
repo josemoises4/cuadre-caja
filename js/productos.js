@@ -5,6 +5,13 @@ const cantidadTotal = document.getElementById('cantidad-total');
 const totalGeneral = document.getElementById('total-general');
 const btnLimpiar = document.getElementById('btn-limpiar');
 const btnPdf = document.getElementById('btn-pdf');
+const inputCliente = document.getElementById('cliente');
+const inputDni = document.getElementById('dni');
+
+// El DNI solo acepta números
+inputDni.addEventListener('input', () => {
+  inputDni.value = inputDni.value.replace(/\D/g, '');
+});
 
 /* =========================
         MENÚ LATERAL
@@ -44,6 +51,8 @@ document.querySelectorAll('tbody input').forEach(i => i.addEventListener('input'
 ========================= */
 btnLimpiar.addEventListener('click', () => {
   document.querySelectorAll('tbody input').forEach(i => i.value = '');
+  inputCliente.value = '';
+  inputDni.value = '';
   calcular();
 });
 
@@ -90,6 +99,8 @@ btnPdf.addEventListener('click', async () => {
   const area = document.getElementById('area-pdf');
   const tkLogo = document.getElementById('tk-logo');
   const tkLogoTexto = document.getElementById('tk-logo-texto');
+  const tkCliente = document.getElementById('tk-cliente');
+  const tkDni = document.getElementById('tk-dni');
   const tkFecha = document.getElementById('tk-fecha');
   const tkFilas = document.getElementById('tk-filas');
   const tkUnid = document.getElementById('tk-unid');
@@ -102,6 +113,8 @@ btnPdf.addEventListener('click', async () => {
     tkLogo.hidden = !conLogo;
     tkLogoTexto.hidden = conLogo;
 
+    tkCliente.textContent = inputCliente.value.trim().toUpperCase() || '-';
+    tkDni.textContent = inputDni.value.trim() || '-';
     tkFecha.textContent = new Date().toLocaleString('es-PE');
     tkUnid.textContent = cant;
     tkTotal.textContent = formato(total);
@@ -130,6 +143,16 @@ btnPdf.addEventListener('click', async () => {
   };
 
   try {
+    // Si logo.js tiene el logo en base64, se usa ese (funciona aunque abras el archivo con doble clic)
+    if (typeof LOGO_ARTIKA !== 'undefined' && LOGO_ARTIKA) {
+      try {
+        if (tkLogo.src !== LOGO_ARTIKA) tkLogo.src = LOGO_ARTIKA;
+        await tkLogo.decode();
+      } catch (e) {
+        console.warn('No se pudo leer el logo de logo.js', e);
+      }
+    }
+
     // Solo se usa el logo si la imagen realmente cargó
     const logoCargado = tkLogo.complete && tkLogo.naturalWidth > 0;
     if (!logoCargado) {
