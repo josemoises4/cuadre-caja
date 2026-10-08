@@ -833,7 +833,7 @@ input[type=number]::-webkit-outer-spin-button {
     transform: rotate(90deg);
 }
 
-/*BTN IMPRIMIR*/
+/* BTN GENERAR PDF */
 #btn-imprimir {
     padding: 12px 28px;
     border: none;
@@ -841,12 +841,12 @@ input[type=number]::-webkit-outer-spin-button {
     font-size: 15px;
     font-weight: bold;
     cursor: pointer;
-    background: #111827;
+    background: #dc2626;
     color: white;
 }
 
 #btn-imprimir:hover {
-    background: #374151;
+    background: #b91c1c;
 }
 
 /*AREA IMPRIMIR*/
