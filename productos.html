@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Productos - ARTIKA</title>
+  <link rel="stylesheet" href="productos.css">
+</head>
+<body>
+
+  <div class="layout">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="logo-box">
+        <img src="img/artika-logo.png" alt="LOGO ARTIKA">
+      </div>
+
+      <ul class="user-list">
+        <li class="user-name has-submenu" id="btn-reparto">
+          REPARTO
+          <span class="arrow">▸</span>
+        </li>
+
+        <ul class="submenu" id="submenu-reparto">
+          <li class="submenu-item">
+            <a href="productos.html">PRODUCTOS</a>
+          </li>
+
+          <li class="submenu-item">
+            <a href="index.html">CUADRE DIGITAL</a>
+          </li>
+        </ul>
+      </ul>
+    </div>
+
+    <!-- CONTENEDOR GENERAL -->
+    <div class="container">
+      <main class="contenedor">
+        <table class="tabla">
+          <thead>
+            <tr>
+              <th>CATEGORIA</th>
+              <th>PRODUCTOS</th>
+              <th>CANTIDAD</th>
+              <th>PRECIO</th>
+              <th>TOTAL</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="inicio-grupo" data-categoria="PALETAS">
+              <td class="categoria c-paletas" rowspan="3">PALETAS</td>
+              <td class="producto">CHOCOLATE <span class="presentacion"> x24 Unid</span></td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="24"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr data-categoria="PALETAS">
+              <td class="producto">FRESA <span class="presentacion"> x24 Unid</span></td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="24"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr class="fin-grupo" data-categoria="PALETAS">
+              <td class="producto">LUCUMA <span class="presentacion"> x24 Unid</span></td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="24"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr data-categoria="">
+              <td class="sin-categoria"></td>
+              <td class="producto">CHISPECAS SURTIDO <span class="presentacion"> x30 Unid</span></td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="30"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr data-categoria="">
+              <td class="sin-categoria"></td>
+              <td class="producto">CHISPECAS DE VAINILLA <span class="presentacion"> x50 Unid</span></td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="50"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr class="inicio-grupo" data-categoria="ESPECIALES">
+              <td class="categoria c-especiales" rowspan="4">ESPECIALES</td>
+              <td class="producto">RON CON PASAS <span class="presentacion"> x20 Unid</span></td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="23"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr data-categoria="ESPECIALES">
+              <td class="producto">ALGARROBINA <span class="presentacion"> x20 Unid</span></td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="23"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr data-categoria="ESPECIALES">
+              <td class="producto">CAFE <span class="presentacion"> x20 Unid</span></td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="23"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr class="fin-grupo" data-categoria="ESPECIALES">
+              <td class="producto">COCO <span class="presentacion"> x20 Unid</span></td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="23"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr data-categoria="">
+              <td class="sin-categoria"></td>
+              <td class="producto">RELLENA <span class="presentacion"> x24 Unid</span></td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="18"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr data-categoria="">
+              <td class="sin-categoria"></td>
+              <td class="producto">CHICLEMON <span class="presentacion"> x20 Unid</span></td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="15"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr data-categoria="">
+              <td class="sin-categoria"></td>
+              <td class="producto">PIÑA COLA <span class="presentacion"> x20 Unid</span></td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="22"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr class="inicio-grupo" data-categoria="SUKOY">
+              <td class="categoria c-sukoy" rowspan="2">SUKOY</td>
+              <td class="producto">CHOCOLATE <span class="presentacion"> x24 Unid</span></td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="21.6"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr class="fin-grupo" data-categoria="SUKOY">
+              <td class="producto">VAINILLA <span class="presentacion"> x24 Unid</span></td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="21.6"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr class="inicio-grupo" data-categoria="SUPAY">
+              <td class="categoria c-supay" rowspan="2">SUPAY</td>
+              <td class="producto">CHOCOLATE <span class="presentacion"> x20 Unid</span></td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="25"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr class="fin-grupo" data-categoria="SUPAY">
+              <td class="producto">LUCUMA <span class="presentacion"> x20 Unid</span></td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="25"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr data-categoria="">
+              <td class="sin-categoria"></td>
+              <td class="producto">AGUAJE <span class="presentacion"> x25 Unid</span></td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="37.5"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr class="inicio-grupo" data-categoria="SACRAS">
+              <td class="categoria c-sacras" rowspan="4">SACRAS</td>
+              <td class="producto">FRESA <span class="presentacion"> x25 Unid</span></td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="25"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr data-categoria="SACRAS">
+              <td class="producto">MANGO <span class="presentacion"> x25 Unid</span></td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="25"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr data-categoria="SACRAS">
+              <td class="producto">GUANABANA <span class="presentacion"> x25 Unid</span></td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="25"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr class="fin-grupo" data-categoria="SACRAS">
+              <td class="producto">MARACUYA <span class="presentacion"> x25 Unid</span></td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="25"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr data-categoria="">
+              <td class="sin-categoria"></td>
+              <td class="producto">CHELITA <span class="presentacion"> x20 Unid</span></td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="30"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr class="inicio-grupo" data-categoria="SANDWICHITOS">
+              <td class="categoria c-sandwichitos" rowspan="3">SANDWICHITOS</td>
+              <td class="producto">CHANCAYSITO <span class="presentacion"> x27 Unid</span></td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="29.7"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr data-categoria="SANDWICHITOS">
+              <td class="producto">KIMMI SANDWICH <span class="presentacion"> x20 Unid</span></td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="31"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr class="fin-grupo" data-categoria="SANDWICHITOS">
+              <td class="producto">CHANCAYSITO BISABOR <span class="presentacion"> x24 Unid</span></td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="39.12"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr class="inicio-grupo" data-categoria="APU">
+              <td class="categoria c-apu" rowspan="2">APU</td>
+              <td class="producto">LUCUMA <span class="presentacion"> x20 Unid</span></td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="33"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr class="fin-grupo" data-categoria="APU">
+              <td class="producto">CHOCOLATE <span class="presentacion"> x20 Unid</span></td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="33"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr data-categoria="">
+              <td class="sin-categoria"></td>
+              <td class="producto">FRAMBUCO <span class="presentacion"> x20 Unid</span></td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="38"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr data-categoria="">
+              <td class="sin-categoria"></td>
+              <td class="producto">CASANOVA <span class="presentacion"> x20 Unid</span></td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="25"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr data-categoria="">
+              <td class="sin-categoria"></td>
+              <td class="producto">YANACHA <span class="presentacion"> x12 Unid</span></td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="14.4"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr class="inicio-grupo" data-categoria="VASOS">
+              <td class="categoria c-vasos" rowspan="2">VASOS</td>
+              <td class="producto">LUCUMA <span class="presentacion"> x12 Unid</span></td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="18"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr class="fin-grupo" data-categoria="VASOS">
+              <td class="producto">FRESA <span class="presentacion"> x12 Unid</span></td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="18"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr class="inicio-grupo" data-categoria="D' LUCA">
+              <td class="categoria c-luca" rowspan="4">D' LUCA</td>
+              <td class="producto">CHOCOLATE <span class="presentacion"> x32 Unid</span></td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="24"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr data-categoria="D' LUCA">
+              <td class="producto">CHICLE <span class="presentacion"> x32 Unid</span></td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="24"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr data-categoria="D' LUCA">
+              <td class="producto">CHICHA <span class="presentacion"> x32 Unid</span></td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="24"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr class="fin-grupo" data-categoria="D' LUCA">
+              <td class="producto">MANGO <span class="presentacion"> x32 Unid</span></td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="24"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr class="inicio-grupo" data-categoria="LITRO">
+              <td class="categoria c-litro" rowspan="5">LITRO</td>
+              <td class="producto">VAINILLA CHIP</td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="8"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr data-categoria="LITRO">
+              <td class="producto">TRICOLOR</td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="8"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr data-categoria="LITRO">
+              <td class="producto">ALGARROBINA</td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="10.5"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr data-categoria="LITRO">
+              <td class="producto">RON CON PASAS</td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="10.5"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr class="fin-grupo" data-categoria="LITRO">
+              <td class="producto">CHOCOLATE</td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="11.5"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr class="inicio-grupo" data-categoria="CUBETAS">
+              <td class="categoria c-cubetas" rowspan="5">CUBETAS</td>
+              <td class="producto">VAINILLA CHIP</td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="26"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr data-categoria="CUBETAS">
+              <td class="producto">LUCUMA CHIP</td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="26"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr data-categoria="CUBETAS">
+              <td class="producto">TRICOLOR</td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="26"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr data-categoria="CUBETAS">
+              <td class="producto">RON CON PASAS</td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="27.5"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+            <tr class="fin-grupo" data-categoria="CUBETAS">
+              <td class="producto">MENTA CHIP</td>
+              <td class="cantidad"><input type="number" min="0" inputmode="numeric" placeholder=""></td>
+              <td class="precio" data-precio="26"></td>
+              <td class="total">S/.0,00</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr class="resumen">
+              <td class="vacio"></td>
+              <td>CANTIDAD</td>
+              <td id="cantidad-total" class="rojo">0</td>
+              <td>TOTAL REBOTES</td>
+              <td id="total-general" class="rojo">S/.0,00</td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <div class="acciones">
+          <button type="button" id="btn-limpiar" class="btn-limpiar">LIMPIAR<br></button>
+          <button type="button" id="btn-pdf" class="btn-pdf">GENERAR PDF</button>
+        </div>
+      </main>
+    </div>
+
+  </div>
+
+  <!-- Ticket oculto: de aquí se genera el PDF (NOTA DE PEDIDO) -->
+  <div id="area-pdf" class="area-pdf">
+
+    <div class="tk-head">
+      <div class="tk-dist">DISTRIBUIDORA</div>
+      <img id="tk-logo" class="tk-logo" src="img/artika-logo.png" alt="ARTIKA">
+      <div id="tk-logo-texto" class="tk-tit" hidden>ARTIKA</div>
+      <div class="tk-emp">INVERSIONES M &amp; S LIMA SUR S.A.C.</div>
+      <div class="tk-tit">NOTA DE PEDIDO</div>
+      <div class="tk-sub">Documento interno · No es comprobante de pago</div>
+    </div>
+
+    <div class="tk-fecha">Fecha: <span id="tk-fecha"></span></div>
+
+    <table class="tk-tabla">
+      <thead>
+        <tr>
+          <th>NOMBRE</th>
+          <th>CANT.</th>
+          <th>PRECIO</th>
+          <th>TOTAL</th>
+        </tr>
+      </thead>
+      <tbody id="tk-filas"></tbody>
+    </table>
+
+    <div class="tk-unid"><span id="tk-unid">0</span> Unid(s)</div>
+    <div class="tk-total">Total: <span id="tk-total">S/.0,00</span></div>
+    <div class="tk-nota">Este documento no tiene valor tributario</div>
+
+  </div>
+
+  <!-- html2canvas + jsPDF para generar el PDF desde el teléfono (sin descargar) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script src="productos.js"></script>
+</body>
+</html>

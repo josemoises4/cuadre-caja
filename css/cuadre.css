@@ -824,6 +824,13 @@ input[type=number]::-webkit-outer-spin-button {
     padding-left: 36px;
 }
 
+.submenu-item a {
+    color: inherit;
+    text-decoration: none;
+    display: block;
+    width: 100%;
+}
+
 /* Estado activo */
 .submenu.open {
     max-height: 300px;

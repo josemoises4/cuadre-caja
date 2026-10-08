@@ -1,0 +1,308 @@
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 12px;
+  background: #f3f3f3;
+  font-family: Calibri, Arial, Helvetica, sans-serif;
+  font-size: 13px;
+}
+
+.contenedor {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  table-layout: fixed;
+}
+
+.tabla th,
+.tabla td {
+  border: 1px solid #000;
+  padding: 4px 6px;
+  text-align: center;
+  vertical-align: middle;
+  height: 26px;
+}
+
+/* Encabezado */
+.tabla thead th {
+  background: #9fc5e8;
+  font-size: 13px;
+  font-weight: bold;
+}
+.tabla th:nth-child(1) { width: 20%; }
+.tabla th:nth-child(2) { width: 34%; }
+.tabla th:nth-child(3) { width: 16%; }
+.tabla th:nth-child(4) { width: 15%; }
+.tabla th:nth-child(5) { width: 15%; }
+
+/* Productos */
+.producto { font-weight: bold; }
+.presentacion { color: #e00000; }
+
+/* Cantidad */
+.cantidad { padding: 0 !important; }
+.cantidad input {
+  width: 100%;
+  height: 100%;
+  min-height: 26px;
+  border: none;
+  background: transparent;
+  text-align: center;
+  font-size: 13px;
+  font-weight: bold;
+}
+.cantidad input:focus {
+  outline: 2px solid #3d85c6;
+  background: #eef6ff;
+}
+
+.precio, .total { font-weight: bold; }
+
+/* Categorías: separación marcada entre grupos */
+.categoria {
+  font-weight: bold;
+  background: #fff;
+}
+.sin-categoria { background: #fff; }
+
+.c-paletas      { background: #3d85c6; }
+.c-especiales   { background: #f9cb9c; }
+.c-sukoy        { background: #fff2cc; }
+.c-supay        { background: #ea9999; }
+.c-sacras       { background: #7fc4de; }
+.c-sandwichitos { background: #b6d7a8; }
+.c-apu          { background: #b4a7d6; }
+.c-vasos        { background: #ffe599; }
+.c-luca         { background: #9fc5e8; }
+.c-litro        { background: #cfe2f3; }
+.c-cubetas      { background: #c27ba0; }
+
+/* Resumen */
+.resumen td {
+  background: #d9d9d9;
+  font-weight: bold;
+  font-size: 12px;
+}
+.resumen td.vacio {
+  background: #fff;
+  border: none;
+}
+.rojo { color: #e00000; }
+
+/* Acciones */
+.acciones {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.btn-limpiar {
+  flex: 1;
+  padding: 10px;
+  background: #ea9999;
+  color: #000;
+  border: 1px solid #000;
+  font-family: inherit;
+  font-weight: bold;
+  font-size: 14px;
+  text-align: center;
+  cursor: pointer;
+}
+.btn-limpiar:hover  { background: #e17f7f; }
+.btn-limpiar:active { background: #d46a6a; }
+
+.btn-pdf {
+  flex: 1;
+  padding: 10px;
+  background: #3d85c6;
+  color: #fff;
+  border: 1px solid #000;
+  font-family: inherit;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+}
+.btn-pdf:hover  { background: #2f6ea6; }
+.btn-pdf:active { background: #255a8a; }
+
+@media (max-width: 480px) {
+  body { padding: 4px; font-size: 11px; }
+  .tabla th, .tabla td { padding: 3px 2px; }
+  .cantidad input { font-size: 12px; }
+  .btn-limpiar, .btn-pdf { font-size: 12px; }
+}
+
+/* =========================
+   LAYOUT + SIDEBAR
+========================= */
+body {
+  padding: 10px;
+  background: #f5f5f5;
+}
+
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.container {
+  flex: 1;
+  min-width: 0;
+  padding: 15px;
+}
+
+.sidebar {
+  width: 220px;
+  background: #1f3c88;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 15px;
+  font-family: 'Poppins', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.sidebar img { width: 120px; }
+
+.user-list {
+  list-style: none;
+  padding: 0;
+  margin: 25px 0 0;
+  width: 100%;
+}
+
+.user-name {
+  padding: 12px 15px;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.user-name:hover {
+  background: rgba(255,255,255,0.12);
+  padding-left: 24px;
+}
+
+.has-submenu {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.arrow { transition: transform 0.25s ease; }
+
+.submenu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background: rgba(255,255,255,0.05);
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.submenu-item {
+  padding: 11px 28px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.submenu-item:hover {
+  background: rgba(255,255,255,0.12);
+  padding-left: 36px;
+}
+.submenu-item a {
+  color: inherit;
+  text-decoration: none;
+  display: block;
+  width: 100%;
+}
+
+.submenu.open { max-height: 300px; }
+.has-submenu.open .arrow { transform: rotate(90deg); }
+
+/* En pantallas pequeñas el menú pasa arriba para que la tabla tenga espacio */
+@media (max-width: 767px) {
+  body { padding: 5px; }
+  .layout { flex-direction: column; }
+  .sidebar { width: 100%; padding-bottom: 10px; }
+  .container { padding: 8px 0; }
+}
+
+/* =========================
+   ÁREA OCULTA PARA EL PDF (formato ticket 80 mm)
+========================= */
+.area-pdf {
+  position: absolute;
+  left: -10000px;
+  top: 0;
+  width: 302px;
+  padding: 12px 10px 16px;
+  background: #fff;
+  color: #000;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11px;
+}
+.area-pdf [hidden] { display: none !important; }
+.tk-head { text-align: center; }
+.tk-dist { font-size: 9px; font-weight: bold; letter-spacing: 1px; }
+.tk-logo { width: 130px; height: auto; display: block; margin: 4px auto; }
+.tk-emp  { font-size: 11px; margin-top: 6px; }
+.tk-tit  { font-size: 13px; font-weight: bold; margin-top: 8px; }
+.tk-sub  { font-size: 9px; margin-top: 2px; }
+.tk-fecha { margin: 10px 0 6px; font-size: 10px; }
+
+.tk-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  border-top: 1px dashed #000;
+  border-bottom: 1px dashed #000;
+}
+.tk-tabla th,
+.tk-tabla td {
+  padding: 3px 2px;
+  text-align: right;
+  vertical-align: top;
+  font-size: 10px;
+  border: none;
+}
+.tk-tabla th { font-weight: normal; border-bottom: 1px dashed #000; }
+.tk-tabla th:first-child,
+.tk-tabla td:first-child { text-align: left; width: 46%; }
+.tk-tabla th:nth-child(2),
+.tk-tabla td:nth-child(2) { text-align: center; }
+
+.tk-unid  { margin-top: 6px; font-size: 10px; }
+.tk-total {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px dashed #000;
+  text-align: right;
+  font-size: 13px;
+  font-weight: bold;
+}
+.tk-nota { margin-top: 12px; text-align: center; font-size: 9px; }
+
+/* Logo del sidebar: tamaño fijo e idéntico en todas las páginas */
+.sidebar .logo-box {
+  width: 100%;
+  height: auto;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.sidebar img {
+  width: 120px;
+  height: auto;
+  display: block;
+}
