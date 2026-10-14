@@ -1,135 +1,336 @@
+
 /* =========================
    FORMATEO Y UTILIDADES
 ========================= */
 
-// Formatea un número como moneda peruana (PEN)
 function formatNumber(num) {
     return new Intl.NumberFormat('es-PE', {
         style: 'currency',
         currency: 'PEN',
         minimumFractionDigits: 2
-    }).format(num);
+    }).format(Number(num) || 0);
 }
 
-// Obtiene el valor numérico de un input por ID
-// Convierte comas en puntos y retorna 0 si es inválido
 function getValue(id) {
     const element = document.getElementById(id);
     if (!element) return 0;
 
-    let value = element.value.toString().replace(',', '.');
-    return parseFloat(value) || 0;
+    const value = String(element.value ?? '').replace(',', '.');
+    const number = parseFloat(value);
+
+    return Number.isFinite(number) ? number : 0;
 }
 
-// Variable para rastrear si estamos editando un cuadre existente
+function setText(id, value) {
+    const element = document.getElementById(id);
+    if (element) element.textContent = value;
+}
+
+function setValue(id, value) {
+    const element = document.getElementById(id);
+    if (element) element.value = value ?? '';
+}
+
+function getHistorial() {
+    try {
+        const historial = JSON.parse(
+            localStorage.getItem('historialCuadres') || '[]'
+        );
+
+        return Array.isArray(historial) ? historial : [];
+    } catch (error) {
+        console.error('Error al leer el historial:', error);
+        return [];
+    }
+}
+
+function guardarHistorial(historial) {
+    localStorage.setItem('historialCuadres', JSON.stringify(historial));
+}
+
+function fechaLocalHoy() {
+    const hoy = new Date();
+    const anio = hoy.getFullYear();
+    const mes = String(hoy.getMonth() + 1).padStart(2, '0');
+    const dia = String(hoy.getDate()).padStart(2, '0');
+
+    return `${anio}-${mes}-${dia}`;
+}
+
+function escaparHTML(valor) {
+    return String(valor ?? '').replace(/[&<>"']/g, caracter => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    })[caracter]);
+}
+
 let cuadreEnEdicion = null;
 
 
 /* =========================
-          CALCULOS
+   FILAS DINÁMICAS
 ========================= */
 
-// Función principal que recalcula todos los totales
+const CLIENTES_INICIALES = 7;
+const GASTOS_INICIALES = 5;
+
+function obtenerFilasClientes() {
+    const cuerpo = document.getElementById('clientes-body');
+    return cuerpo ? Array.from(cuerpo.querySelectorAll('tr')) : [];
+}
+
+function obtenerFilasGastos() {
+    const cuerpo = document.getElementById('gastos-operativos-body');
+    return cuerpo ? Array.from(cuerpo.querySelectorAll('tr')) : [];
+}
+
+/*
+ * Crea una fila de cliente copiando la estructura
+ * de la última fila existente.
+ */
+function agregarFilaCliente() {
+    const cuerpo = document.getElementById('clientes-body');
+    if (!cuerpo) return false;
+
+    const filas = obtenerFilasClientes();
+    const ultimaFila = filas[filas.length - 1];
+
+    if (!ultimaFila) return false;
+
+    const nuevaFila = ultimaFila.cloneNode(true);
+    const numero = filas.length + 1;
+
+    nuevaFila.querySelectorAll('input').forEach(input => {
+        if (input.classList.contains('nombre-cliente') ||
+            input.classList.contains('importe-cliente')) {
+            input.value = '';
+        }
+
+        if (input.classList.contains('nombre-cliente')) {
+            input.id = `nombre-cliente-${numero}`;
+        }
+
+        if (input.classList.contains('importe-cliente')) {
+            input.id = `deudor${numero}`;
+        }
+    });
+
+    cuerpo.appendChild(nuevaFila);
+
+    // Por cada nuevo cliente, se agrega un gasto operativo.
+    agregarFilaGasto();
+
+    return true;
+}
+
+/*
+ * Crea un gasto operativo copiando la estructura
+ * de la última fila de gastos.
+ */
+function agregarFilaGasto() {
+    const cuerpo = document.getElementById('gastos-operativos-body');
+    if (!cuerpo) return false;
+
+    const filas = obtenerFilasGastos();
+    const ultimaFila = filas[filas.length - 1];
+
+    if (!ultimaFila) return false;
+
+    const nuevaFila = ultimaFila.cloneNode(true);
+    const numero = filas.length + 1;
+
+    nuevaFila.querySelectorAll('input').forEach(input => {
+        if (input.id.startsWith('gasto-mov-')) {
+            input.id = `gasto-mov-${numero}`;
+            input.value = '';
+        }
+
+        if (input.classList.contains('input-label')) {
+            input.value = `${numero}.`;
+        }
+    });
+
+    cuerpo.appendChild(nuevaFila);
+    actualizarRowspanGastos();
+
+    return true;
+}
+
+function actualizarRowspanGastos() {
+    const encabezado = document.getElementById('gastos-operativos-header');
+    const cantidad = obtenerFilasGastos().length;
+
+    if (encabezado && cantidad > 0) {
+        encabezado.rowSpan = cantidad;
+    }
+}
+
+/*
+ * Garantiza la cantidad necesaria de filas.
+ * Si se necesita reducirlas, elimina las sobrantes.
+ */
+function ajustarFilasClientes(cantidad) {
+    const cuerpo = document.getElementById('clientes-body');
+    if (!cuerpo) return;
+
+    cantidad = Math.max(CLIENTES_INICIALES, cantidad);
+
+    while (obtenerFilasClientes().length > cantidad) {
+        cuerpo.lastElementChild.remove();
+    }
+
+    while (obtenerFilasClientes().length < cantidad) {
+        const filasAntes = obtenerFilasClientes().length;
+
+        if (!agregarFilaCliente()) break;
+
+        /*
+         * Al reconstruir clientes también se crean gastos.
+         * Los gastos se ajustan por separado después.
+         */
+        if (obtenerFilasClientes().length === filasAntes) break;
+    }
+}
+
+function ajustarFilasGastos(cantidad) {
+    const cuerpo = document.getElementById('gastos-operativos-body');
+    if (!cuerpo) return;
+
+    cantidad = Math.max(GASTOS_INICIALES, cantidad);
+
+    while (obtenerFilasGastos().length > cantidad) {
+        cuerpo.lastElementChild.remove();
+    }
+
+    while (obtenerFilasGastos().length < cantidad) {
+        if (!agregarFilaGasto()) break;
+    }
+
+    actualizarRowspanGastos();
+}
+
+/*
+ * Restaura la cantidad inicial de filas sin conservar
+ * filas dinámicas del cuadre anterior.
+ */
+function restaurarFilasIniciales() {
+    const cuerpoClientes = document.getElementById('clientes-body');
+    const cuerpoGastos = document.getElementById('gastos-operativos-body');
+
+    if (cuerpoClientes) {
+        while (obtenerFilasClientes().length > CLIENTES_INICIALES) {
+            cuerpoClientes.lastElementChild.remove();
+        }
+    }
+
+    if (cuerpoGastos) {
+        while (obtenerFilasGastos().length > GASTOS_INICIALES) {
+            cuerpoGastos.lastElementChild.remove();
+        }
+    }
+
+    actualizarRowspanGastos();
+}
+
+
+/* =========================
+   CÁLCULOS
+========================= */
+
 function updateCalculations() {
 
     /* -------- VENTAS -------- */
 
-    const totalVentas = getValue('total-ventas');
-    const fueraRuta   = getValue('fuera-ruta');
-    const campo3      = getValue('campo-3');
-    const campo4      = getValue('campo-4');
-
-    const sumaVentas = totalVentas + fueraRuta + campo3 + campo4;
-
-    const productosNoDespachados = getValue('productos-no-desp');
-    const devoluciones           = getValue('devoluciones');
-    const dctoMercaderia         = getValue('dcto-mercaderia');
+    const sumaVentas =
+        getValue('total-ventas') +
+        getValue('fuera-ruta') +
+        getValue('campo-3') +
+        getValue('campo-4');
 
     const subtotalVentas =
         sumaVentas -
-        productosNoDespachados -
-        devoluciones -
-        dctoMercaderia;
+        getValue('productos-no-desp') -
+        getValue('devoluciones') -
+        getValue('dcto-mercaderia');
 
-    document.getElementById('subtotal-ventas').textContent =
-        formatNumber(subtotalVentas);
-
-
-    /* -------- GASTOS MOVILIDAD -------- */
-
-    const gastoMov1 = getValue('gasto-mov-1');
-    const gastoMov2 = getValue('gasto-mov-2');
-    const gastoMov3 = getValue('gasto-mov-3');
-    const gastoMov4 = getValue('gasto-mov-4');
-    const gastoMov5 = getValue('gasto-mov-5');
-
-    const totalGastosMovilidad =
-        gastoMov1 + gastoMov2 + gastoMov3 + gastoMov4 + gastoMov5;
+    setText('subtotal-ventas', formatNumber(subtotalVentas));
 
 
-    /* -------- GASTOS OTROS -------- */
+    /* -------- GASTOS OPERATIVOS -------- */
 
-    const combustible = getValue('combustible');
-    const bono        = getValue('bono');
-    const parqueo     = getValue('parqueo');
-    const pasaje      = getValue('pasaje');
-    const bano        = getValue('bano');
+    const totalGastosMovilidad = obtenerFilasGastos().reduce(
+        (total, fila) => {
+            const input = fila.querySelector('input[id^="gasto-mov-"]');
+            if (!input) return total;
+
+            return total + getValue(input.id);
+        },
+        0
+    );
+
+        // BONO AUTOMÁTICO
+        const total = getValue('total-ventas');
+
+        if (total >= 9000) {
+            const bono = Math.floor(total * 0.005 * 100) / 100;
+            document.getElementById('bono').value = bono.toFixed(2);
+        } else {
+            document.getElementById('bono').value = '';
+        }
+
+    /* -------- OTROS GASTOS -------- */
 
     const totalGastosOtros =
-        combustible + bono + parqueo + pasaje + bano;
-
-
-    /* -------- TOTAL GASTOS -------- */
+        getValue('combustible') +
+        getValue('bono') +
+        getValue('parqueo') +
+        getValue('pasaje') +
+        getValue('bano');
 
     const totalGastos =
         subtotalVentas - totalGastosMovilidad - totalGastosOtros;
 
-    document.getElementById('total-gastos').textContent =
-        formatNumber(totalGastos);
+    setText('total-gastos', formatNumber(totalGastos));
 
 
     /* -------- EFECTIVO -------- */
 
-    const billetes = getValue('billetes');
-    const b5   = getValue('b5');
-    const b2   = getValue('b2');
-    const b1   = getValue('b1');
-    const b050 = getValue('b050');
-    const b020 = getValue('b020');
-    const b010 = getValue('b010');
-
     const subtotalEfectivo =
-        billetes + b5 + b2 + b1 + b050 + b020 + b010;
+        getValue('billetes') +
+        getValue('b5') +
+        getValue('b2') +
+        getValue('b1') +
+        getValue('b050') +
+        getValue('b020') +
+        getValue('b010');
 
-    document.getElementById('subtotal-efectivo').textContent =
-        formatNumber(subtotalEfectivo);
-
-
-    /* -------- DEPOSITOS -------- */
-
-    const bcpYape   = getValue('bcp-yape');
-    const interbank = getValue('interbank');
-    const bbva      = getValue('bbva');
-
-    const subtotalDeposito = bcpYape + interbank + bbva;
-
-    document.getElementById('subtotal-deposito').textContent =
-        formatNumber(subtotalDeposito);
+    setText('subtotal-efectivo', formatNumber(subtotalEfectivo));
 
 
-    /* -------- DEUDORES -------- */
+    /* -------- DEPÓSITOS -------- */
 
-    const deudor1 = getValue('deudor1');
-    const deudor2 = getValue('deudor2');
-    const deudor3 = getValue('deudor3');
-    const deudor4 = getValue('deudor4');
-    const deudor5 = getValue('deudor5');
-    const deudor6 = getValue('deudor6');
-    const deudor7 = getValue('deudor7');
+    const subtotalDeposito =
+        getValue('bcp-yape') +
+        getValue('interbank') +
+        getValue('bbva');
 
-    const totalDeudores =
-        deudor1 + deudor2 + deudor3 +
-        deudor4 + deudor5 + deudor6 + deudor7;
+    setText('subtotal-deposito', formatNumber(subtotalDeposito));
+
+
+    /* -------- DEUDORES DINÁMICOS -------- */
+
+    const totalDeudores = obtenerFilasClientes().reduce(
+        (total, fila) => {
+            const input = fila.querySelector('.importe-cliente');
+            if (!input) return total;
+
+            return total + getValue(input.id);
+        },
+        0
+    );
 
 
     /* -------- TOTAL FINAL -------- */
@@ -137,260 +338,354 @@ function updateCalculations() {
     const totalFinal =
         subtotalEfectivo + subtotalDeposito + totalDeudores;
 
-    document.getElementById('total-final').textContent =
-        formatNumber(totalFinal);
+    setText('total-final', formatNumber(totalFinal));
 
 
     /* -------- DIFERENCIA -------- */
 
     const diferencia = totalFinal - totalGastos;
-
     const filaResultado = document.getElementById('resultado-row');
-    const resultado     = document.getElementById('resultado');
+    const resultado = document.getElementById('resultado');
 
-    filaResultado.className = '';
+    if (!filaResultado || !resultado) return;
+
+    filaResultado.classList.remove(
+        'resultado-ok',
+        'resultado-falta',
+        'resultado-cuadra'
+    );
+
+    resultado.textContent = formatNumber(diferencia);
 
     if (diferencia > 0) {
-        resultado.textContent = formatNumber(diferencia);
         filaResultado.classList.add('resultado-ok');
-    }
-    else if (diferencia < 0) {
-        resultado.textContent = formatNumber(diferencia);
+    } else if (diferencia < 0) {
         filaResultado.classList.add('resultado-falta');
-    }
-    else {
-        resultado.textContent = formatNumber(0);
+    } else {
         filaResultado.classList.add('resultado-cuadra');
     }
 }
 
 
 /* =========================
-          EVENTOS
+   DATOS DEL FORMULARIO
 ========================= */
 
-// Asigna eventos input y change a todos los inputs numéricos
-function addEventListeners() {
-    const inputs = document.querySelectorAll('input[type="number"]');
+const CAMPOS_FIJOS = [
+    'total-ventas',
+    'fuera-ruta',
+    'campo-3',
+    'campo-4',
+    'productos-no-desp',
+    'devoluciones',
+    'dcto-mercaderia',
+    'combustible',
+    'bono',
+    'parqueo',
+    'pasaje',
+    'bano',
+    'billetes',
+    'b5',
+    'b2',
+    'b1',
+    'b050',
+    'b020',
+    'b010',
+    'bcp-yape',
+    'interbank',
+    'bbva'
+];
 
-    inputs.forEach(input => {
-        input.addEventListener('input', updateCalculations);
-        input.addEventListener('change', updateCalculations);
+function recopilarDatosFormulario() {
+    const campos = {};
+
+    CAMPOS_FIJOS.forEach(id => {
+        campos[id] = getValue(id);
     });
+
+    const camposTexto = document.querySelectorAll('.input-field');
+
+    const clientes = obtenerFilasClientes().map(fila => ({
+        nombre: fila.querySelector('.nombre-cliente')?.value.trim() || '',
+        importe: getValue(fila.querySelector('.importe-cliente')?.id)
+    }));
+
+    const gastosOperativos = obtenerFilasGastos().map(fila => {
+        const input = fila.querySelector('input[id^="gasto-mov-"]');
+        return input ? getValue(input.id) : 0;
+    });
+
+    const datos = {
+        ...campos,
+        fecha: document.getElementById('fecha')?.value || '',
+        responsable: camposTexto[0]?.value.trim() || '',
+        rutaSede: camposTexto[1]?.value.trim() || '',
+        clientes,
+        gastosOperativos,
+
+        subtotalVentas: document.getElementById('subtotal-ventas')?.textContent || '',
+        totalGastos: document.getElementById('total-gastos')?.textContent || '',
+        subtotalEfectivo: document.getElementById('subtotal-efectivo')?.textContent || '',
+        subtotalDeposito: document.getElementById('subtotal-deposito')?.textContent || '',
+        totalFinal: document.getElementById('total-final')?.textContent || '',
+        diferencia: document.getElementById('resultado')?.textContent || ''
+    };
+
+    // Conserva compatibilidad con los registros anteriores.
+    gastosOperativos.forEach((valor, indice) => {
+        datos[`gastoMov${indice + 1}`] = valor;
+    });
+
+    clientes.forEach((cliente, indice) => {
+        datos[`deudor${indice + 1}`] = cliente.importe;
+    });
+
+    return datos;
 }
 
 
 /* =========================
-        INICIALIZACION
+   EVENTOS E INICIALIZACIÓN
 ========================= */
 
-// Inicializa eventos y cálculos al cargar la página
+function addEventListeners() {
+    /*
+     * Delegación de eventos: también funciona con inputs
+     * que se creen después de cargar la página.
+     */
+    document.addEventListener('input', event => {
+        const input = event.target;
+
+        if (input.matches('.nombre-cliente')) {
+            const filas = obtenerFilasClientes();
+            const ultimaFila = filas[filas.length - 1];
+
+            /*
+             * Solo crea una fila cuando se escribe en el
+             * nombre de la última fila disponible.
+             */
+            if (
+                ultimaFila &&
+                ultimaFila.contains(input) &&
+                input.value.trim() !== ''
+            ) {
+                agregarFilaCliente();
+            }
+        }
+
+        if (
+            input.matches('input[type="number"]') ||
+            input.matches('.importe-cliente')
+        ) {
+            updateCalculations();
+        }
+    });
+
+    document.addEventListener('change', event => {
+        if (event.target.matches('input')) {
+            updateCalculations();
+        }
+    });
+
+    document.addEventListener('paste', () => {
+        setTimeout(updateCalculations, 100);
+    });
+
+    const btnLimpiar = document.getElementById('btn-limpiar');
+    if (btnLimpiar) btnLimpiar.addEventListener('click', limpiarTodo);
+
+    const btnGuardar = document.getElementById('btn-guardar');
+    if (btnGuardar) btnGuardar.addEventListener('click', guardarCuadre);
+
+    const btnHistorial = document.getElementById('btn-historial');
+    if (btnHistorial) btnHistorial.addEventListener('click', verHistorial);
+
+    const cerrarModal = document.querySelector('.close-modal');
+    if (cerrarModal) {
+        cerrarModal.addEventListener('click', () => {
+            const modal = document.getElementById('modal-historial');
+            if (modal) modal.style.display = 'none';
+        });
+    }
+
+    window.addEventListener('click', event => {
+        const modal = document.getElementById('modal-historial');
+
+        if (modal && event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+
+    const btnReparto = document.getElementById('btn-reparto');
+    const submenu = document.getElementById('submenu-reparto');
+
+    if (btnReparto && submenu) {
+        btnReparto.addEventListener('click', () => {
+            submenu.classList.toggle('open');
+            btnReparto.classList.toggle('open');
+        });
+    }
+
+    const btnImprimir = document.getElementById('btn-imprimir');
+    if (btnImprimir) {
+        btnImprimir.addEventListener('click', imprimirCuadre);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+    actualizarRowspanGastos();
     addEventListeners();
     updateCalculations();
 });
 
-// Recalcula después de pegar valores
-document.addEventListener('paste', () => {
-    setTimeout(updateCalculations, 100);
-});
-
 
 /* =========================
-       LIMPIEZA TOTAL
+   LIMPIEZA TOTAL
 ========================= */
 
-// Evento botón limpiar
-document.getElementById("btn-limpiar")
-    .addEventListener("click", limpiarTodo);
-
-// Limpia todos los campos del formulario
 function limpiarTodo() {
     cuadreEnEdicion = null;
 
-    document.querySelectorAll("input")
-        .forEach(input => limpiarInput(input));
+    restaurarFilasIniciales();
 
-    document.querySelectorAll("span")
-        .forEach(span => {
-            if (span.id) span.textContent = formatNumber(0);
-        });
+    document.querySelectorAll('input').forEach(input => {
+        if (input.type === 'number') {
+            input.value = '';
+        } else if (input.type === 'date') {
+            input.value = fechaLocalHoy();
+        } else if (input.type === 'text') {
+            if (
+                !input.classList.contains('input-label') &&
+                input.value !== 'GENERAL'
+            ) {
+                input.value = '';
+            }
+        }
+    });
 
     updateCalculations();
 }
 
-// Limpia un input según su tipo
-function limpiarInput(input) {
-
-    if (input.type === "number") {
-        input.value = "";
-    }
-
-    if (input.type === "text") {
-        if (!input.classList.contains('input-label') &&
-            input.value !== "GENERAL") {
-            input.value = "";
-        }
-    }
-
-    if (input.type === "date") {
-        input.value = new Date().toISOString().split('T')[0];
-    }
-}
-
 
 /* =========================
-          HISTORIAL
+   GUARDAR CUADRE
 ========================= */
 
-// Evento guardar cuadre
-document.getElementById("btn-guardar")
-    .addEventListener("click", guardarCuadre);
-
-// Guarda el cuadre en localStorage
 function guardarCuadre() {
+    updateCalculations();
 
-    const fecha = document.getElementById('fecha').value;
-    const responsable =
-        document.querySelector('.input-field').value.trim();
+    const datos = recopilarDatosFormulario();
+    const fecha = datos.fecha;
+    const responsable = datos.responsable;
 
     if (!fecha) {
-        alert('❌ Por favor selecciona una fecha antes de guardar');
+        alert('❌ Por favor selecciona una fecha antes de guardar.');
         return;
     }
 
     if (!responsable) {
-        alert('❌ Por favor ingresa el nombre del RESPONSABLE antes de guardar');
+        alert('❌ Por favor ingresa el nombre del RESPONSABLE antes de guardar.');
         return;
     }
 
-    const totalGastos = parseFloat(
-        document.getElementById('total-gastos')
-            .textContent.replace(/[^0-9.-]/g, '')
+    const hayDatosFijos = CAMPOS_FIJOS.some(id => {
+        const input = document.getElementById(id);
+        return input && input.value.trim() !== '';
+    });
+
+    const hayDatosClientes = datos.clientes.some(cliente =>
+        cliente.nombre !== '' || cliente.importe !== 0
     );
 
-    const totalFinal = parseFloat(
-        document.getElementById('total-final')
-            .textContent.replace(/[^0-9.-]/g, '')
-    );
+    const hayDatosGastos = datos.gastosOperativos.some(valor => valor !== 0);
 
-    if (totalGastos === 0 && totalFinal === 0) {
+    if (!hayDatosFijos && !hayDatosClientes && !hayDatosGastos) {
         alert('❌ No puedes guardar un cuadre vacío. Debes ingresar datos primero.');
         return;
     }
 
-    // Recopilar todos los datos
-    const cuadre = {
-        fecha: fecha,
-        responsable: responsable,
-        rutaSede: document.querySelectorAll('.input-field')[1].value,
-
-        totalVentas: getValue('total-ventas'),
-        fueraRuta: getValue('fuera-ruta'),
-        campo3: getValue('campo-3'),
-        campo4: getValue('campo-4'),
-        productosNoDespachados: getValue('productos-no-desp'),
-        devoluciones: getValue('devoluciones'),
-        dctoMercaderia: getValue('dcto-mercaderia'),
-
-        gastoMov1: getValue('gasto-mov-1'),
-        gastoMov2: getValue('gasto-mov-2'),
-        gastoMov3: getValue('gasto-mov-3'),
-        gastoMov4: getValue('gasto-mov-4'),
-        gastoMov5: getValue('gasto-mov-5'),
-
-        combustible: getValue('combustible'),
-        bono: getValue('bono'),
-        parqueo: getValue('parqueo'),
-        pasaje: getValue('pasaje'),
-        bano: getValue('bano'),
-
-        billetes: getValue('billetes'),
-        b5: getValue('b5'),
-        b2: getValue('b2'),
-        b1: getValue('b1'),
-        b050: getValue('b050'),
-        b020: getValue('b020'),
-        b010: getValue('b010'),
-
-        bcpYape: getValue('bcp-yape'),
-        interbank: getValue('interbank'),
-        bbva: getValue('bbva'),
-
-        deudor1: getValue('deudor1'),
-        deudor2: getValue('deudor2'),
-        deudor3: getValue('deudor3'),
-        deudor4: getValue('deudor4'),
-        deudor5: getValue('deudor5'),
-        deudor6: getValue('deudor6'),
-
-        subtotalVentas: document.getElementById('subtotal-ventas').textContent,
-        totalGastos: document.getElementById('total-gastos').textContent,
-        subtotalEfectivo: document.getElementById('subtotal-efectivo').textContent,
-        subtotalDeposito: document.getElementById('subtotal-deposito').textContent,
-        totalFinal: document.getElementById('total-final').textContent,
-        diferencia: document.getElementById('resultado').textContent
-    };
-
-    let historial = JSON.parse(localStorage.getItem('historialCuadres') || '[]');
+    let historial = getHistorial();
 
     if (cuadreEnEdicion !== null) {
-        historial[cuadreEnEdicion] = cuadre;
+        if (historial[cuadreEnEdicion]) {
+            const duplicado = historial.some((cuadre, indice) =>
+                indice !== cuadreEnEdicion &&
+                cuadre.fecha === fecha &&
+                String(cuadre.responsable || '').toLowerCase() === responsable.toLowerCase()
+            );
+
+            if (duplicado) {
+                alert(`❌ Ya existe un cuadre de "${responsable}" para la fecha ${fecha}.`);
+                return;
+            }
+
+            historial[cuadreEnEdicion] = datos;
+            guardarHistorial(historial);
+            cuadreEnEdicion = null;
+
+            alert('✅ Cuadre actualizado exitosamente para ' + responsable);
+            return;
+        }
+
         cuadreEnEdicion = null;
-        localStorage.setItem('historialCuadres', JSON.stringify(historial));
-        alert('✅ Cuadre actualizado exitosamente para ' + responsable);
-        return;
     }
 
-    const indexExistente = historial.findIndex(c =>
-        c.fecha === fecha &&
-        c.responsable.toLowerCase() === responsable.toLowerCase()
+    const indexExistente = historial.findIndex(cuadre =>
+        cuadre.fecha === fecha &&
+        String(cuadre.responsable || '').toLowerCase() === responsable.toLowerCase()
     );
 
     if (indexExistente !== -1) {
-        alert(`❌ Ya existe un cuadre de "${responsable}" para la fecha ${fecha}`);
+        alert(`❌ Ya existe un cuadre de "${responsable}" para la fecha ${fecha}.`);
         return;
-    } else {
-        historial.push(cuadre);
     }
 
-    localStorage.setItem('historialCuadres', JSON.stringify(historial));
+    historial.push(datos);
+    guardarHistorial(historial);
+
     alert('✅ Cuadre guardado exitosamente para ' + responsable);
 }
 
 
 /* =========================
-        VER HISTORIAL
+   VER HISTORIAL
 ========================= */
-
-document.getElementById("btn-historial")
-    .addEventListener("click", verHistorial);
 
 function verHistorial() {
     const modal = document.getElementById('modal-historial');
     const lista = document.getElementById('lista-historial');
 
-    let historial = JSON.parse(localStorage.getItem('historialCuadres') || '[]');
+    if (!modal || !lista) return;
+
+    const historial = getHistorial();
 
     if (historial.length === 0) {
         lista.innerHTML = '<div class="no-historial">No hay cuadres guardados</div>';
     } else {
-        historial.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+        /*
+         * Conserva el índice original para que los botones
+         * carguen y eliminen el registro correcto.
+         */
+        const ordenados = historial
+            .map((cuadre, indiceOriginal) => ({ cuadre, indiceOriginal }))
+            .sort((a, b) =>
+                new Date(b.cuadre.fecha) - new Date(a.cuadre.fecha)
+            );
 
-        lista.innerHTML = historial.map((cuadre, index) => `
+        lista.innerHTML = ordenados.map(({ cuadre, indiceOriginal }) => `
             <div class="historial-item">
-                <h3>👤 ${cuadre.responsable} - 📅 ${cuadre.fecha}</h3>
+                <h3>👤 ${escaparHTML(cuadre.responsable)} - 📅 ${escaparHTML(cuadre.fecha)}</h3>
                 <div class="historial-datos">
-                    <div><strong>Ruta/Sede:</strong> ${cuadre.rutaSede || 'N/A'}</div>
-                    <div><strong>Subtotal Ventas:</strong> ${cuadre.subtotalVentas}</div>
-                    <div><strong>Total Gastos:</strong> ${cuadre.totalGastos}</div>
-                    <div><strong>Subtotal Efectivo:</strong> ${cuadre.subtotalEfectivo}</div>
-                    <div><strong>Subtotal Depósito:</strong> ${cuadre.subtotalDeposito}</div>
-                    <div><strong>Total Final:</strong> ${cuadre.totalFinal}</div>
-                    <div class="diferencia-highlight"><strong>Diferencia:</strong> ${cuadre.diferencia}</div>
+                    <div><strong>Ruta/Sede:</strong> ${escaparHTML(cuadre.rutaSede || 'N/A')}</div>
+                    <div><strong>Subtotal Ventas:</strong> ${escaparHTML(cuadre.subtotalVentas || formatNumber(0))}</div>
+                    <div><strong>Total Gastos:</strong> ${escaparHTML(cuadre.totalGastos || formatNumber(0))}</div>
+                    <div><strong>Subtotal Efectivo:</strong> ${escaparHTML(cuadre.subtotalEfectivo || formatNumber(0))}</div>
+                    <div><strong>Subtotal Depósito:</strong> ${escaparHTML(cuadre.subtotalDeposito || formatNumber(0))}</div>
+                    <div><strong>Total Final:</strong> ${escaparHTML(cuadre.totalFinal || formatNumber(0))}</div>
+                    <div class="diferencia-highlight"><strong>Diferencia:</strong> ${escaparHTML(cuadre.diferencia || formatNumber(0))}</div>
                 </div>
-                <button onclick="cargarCuadre(${index})">✏️ CARGAR / EDITAR</button>
-                <button onclick="eliminarCuadre(${index})" class="btn-eliminar">🗑 ELIMINAR</button>
+                <button type="button" onclick="cargarCuadre(${indiceOriginal})">✏️ CARGAR / EDITAR</button>
+                <button type="button" onclick="eliminarCuadre(${indiceOriginal})" class="btn-eliminar">🗑 ELIMINAR</button>
             </div>
         `).join('');
     }
@@ -400,86 +695,111 @@ function verHistorial() {
 
 
 /* =========================
-        CARGAR CUADRE
+   CARGAR / EDITAR CUADRE
 ========================= */
 
 function cargarCuadre(index) {
-    let historial = JSON.parse(localStorage.getItem('historialCuadres') || '[]');
+    const historial = getHistorial();
     const cuadre = historial[index];
 
-    if (confirm('¿Deseas cargar este cuadre para editarlo?')) {
-
-        cuadreEnEdicion = index;
-
-        document.getElementById('fecha').value = cuadre.fecha;
-        document.querySelector('.input-field').value = cuadre.responsable;
-        document.querySelectorAll('.input-field')[1].value = cuadre.rutaSede;
-
-        document.getElementById('total-ventas').value = cuadre.totalVentas;
-        document.getElementById('fuera-ruta').value = cuadre.fueraRuta;
-        document.getElementById('campo-3').value = cuadre.campo3;
-        document.getElementById('campo-4').value = cuadre.campo4;
-        document.getElementById('productos-no-desp').value = cuadre.productosNoDespachados;
-        document.getElementById('devoluciones').value = cuadre.devoluciones;
-        document.getElementById('dcto-mercaderia').value = cuadre.dctoMercaderia;
-
-        document.getElementById('gasto-mov-1').value = cuadre.gastoMov1;
-        document.getElementById('gasto-mov-2').value = cuadre.gastoMov2;
-        document.getElementById('gasto-mov-3').value = cuadre.gastoMov3;
-        document.getElementById('gasto-mov-4').value = cuadre.gastoMov4;
-        document.getElementById('gasto-mov-5').value = cuadre.gastoMov5;
-
-        document.getElementById('combustible').value = cuadre.combustible;
-        document.getElementById('bono').value = cuadre.bono;
-        document.getElementById('parqueo').value = cuadre.parqueo;
-        document.getElementById('pasaje').value = cuadre.pasaje;
-        document.getElementById('bano').value = cuadre.bano;
-
-        document.getElementById('billetes').value = cuadre.billetes;
-        document.getElementById('b5').value = cuadre.b5;
-        document.getElementById('b2').value = cuadre.b2;
-        document.getElementById('b1').value = cuadre.b1;
-        document.getElementById('b050').value = cuadre.b050;
-        document.getElementById('b020').value = cuadre.b020;
-        document.getElementById('b010').value = cuadre.b010;
-
-        document.getElementById('bcp-yape').value = cuadre.bcpYape;
-        document.getElementById('interbank').value = cuadre.interbank;
-        document.getElementById('bbva').value = cuadre.bbva;
-
-        document.getElementById('deudor1').value = cuadre.deudor1;
-        document.getElementById('deudor2').value = cuadre.deudor2;
-        document.getElementById('deudor3').value = cuadre.deudor3;
-        document.getElementById('deudor4').value = cuadre.deudor4;
-        document.getElementById('deudor5').value = cuadre.deudor5;
-        document.getElementById('deudor6').value = cuadre.deudor6;
-
-        updateCalculations();
-        document.getElementById('modal-historial').style.display = 'none';
-
-        alert('✅ Cuadre cargado. Edita y presiona GUARDAR.');
+    if (!cuadre) {
+        alert('No se encontró el cuadre seleccionado.');
+        return;
     }
+
+    if (!confirm('¿Deseas cargar este cuadre para editarlo?')) return;
+
+    cuadreEnEdicion = index;
+
+    /*
+     * Primero elimina las filas adicionales anteriores.
+     * Después reconstruye las filas guardadas.
+     */
+    restaurarFilasIniciales();
+
+    const clientesGuardados = Array.isArray(cuadre.clientes)
+        ? cuadre.clientes
+        : Array.from({ length: CLIENTES_INICIALES }, (_, indice) => ({
+            nombre: '',
+            importe: cuadre[`deudor${indice + 1}`] ?? 0
+        }));
+
+    const gastosGuardados = Array.isArray(cuadre.gastosOperativos)
+        ? cuadre.gastosOperativos
+        : Array.from({ length: GASTOS_INICIALES }, (_, indice) =>
+            cuadre[`gastoMov${indice + 1}`] ?? 0
+        );
+
+    ajustarFilasClientes(Math.max(CLIENTES_INICIALES, clientesGuardados.length));
+
+    /*
+     * ajustarFilasClientes también crea un gasto por cada
+     * fila nueva; se ajusta luego a la cantidad guardada.
+     */
+    ajustarFilasGastos(Math.max(GASTOS_INICIALES, gastosGuardados.length));
+
+    setValue('fecha', cuadre.fecha || '');
+    setValue('total-ventas', cuadre['total-ventas'] ?? cuadre.totalVentas);
+    setValue('fuera-ruta', cuadre.fueraRuta);
+    setValue('campo-3', cuadre.campo3);
+    setValue('campo-4', cuadre.campo4);
+    setValue('productos-no-desp', cuadre.productosNoDespachados);
+    setValue('devoluciones', cuadre.devoluciones);
+    setValue('dcto-mercaderia', cuadre.dctoMercaderia);
+
+    CAMPOS_FIJOS.forEach(id => {
+        if (Object.prototype.hasOwnProperty.call(cuadre, id)) {
+            setValue(id, cuadre[id]);
+        }
+    });
+
+    const camposTexto = document.querySelectorAll('.input-field');
+    if (camposTexto[0]) camposTexto[0].value = cuadre.responsable || '';
+    if (camposTexto[1]) camposTexto[1].value = cuadre.rutaSede || '';
+
+    obtenerFilasGastos().forEach((fila, indice) => {
+        const input = fila.querySelector('input[id^="gasto-mov-"]');
+        if (input) input.value = gastosGuardados[indice] ?? 0;
+    });
+
+    obtenerFilasClientes().forEach((fila, indice) => {
+        const cliente = clientesGuardados[indice] || {};
+        const nombre = fila.querySelector('.nombre-cliente');
+        const importe = fila.querySelector('.importe-cliente');
+
+        if (nombre) nombre.value = cliente.nombre || '';
+        if (importe) importe.value = cliente.importe ?? 0;
+    });
+
+    actualizarRowspanGastos();
+    updateCalculations();
+
+    const modal = document.getElementById('modal-historial');
+    if (modal) modal.style.display = 'none';
+
+    alert('✅ Cuadre cargado. Edita y presiona GUARDAR.');
 }
 
+
 /* =========================
-       ELIMINAR CUADRE
+   ELIMINAR CUADRE
 ========================= */
 
 function eliminarCuadre(index) {
-
-    let historial = JSON.parse(localStorage.getItem('historialCuadres') || '[]');
-
+    const historial = getHistorial();
     const cuadre = historial[index];
 
+    if (!cuadre) return;
+
     const confirmacion = confirm(
-        `¿Seguro que deseas eliminar el cuadre de:\n\n👤 ${cuadre.responsable}\n📅 ${cuadre.fecha}?`
+        `¿Seguro que deseas eliminar el cuadre de:\n\n` +
+        `👤 ${cuadre.responsable}\n📅 ${cuadre.fecha}?`
     );
 
     if (!confirmacion) return;
 
     historial.splice(index, 1);
-
-    localStorage.setItem('historialCuadres', JSON.stringify(historial));
+    guardarHistorial(historial);
 
     alert('🗑 Cuadre eliminado correctamente');
 
@@ -488,43 +808,35 @@ function eliminarCuadre(index) {
 
 
 /* =========================
-        CERRAR MODAL
+   GENERAR PDF
 ========================= */
 
-document.querySelector('.close-modal').addEventListener('click', () => {
-    document.getElementById('modal-historial').style.display = 'none';
-});
-
-window.addEventListener('click', (e) => {
-    const modal = document.getElementById('modal-historial');
-    if (e.target === modal) modal.style.display = 'none';
-});
-
-const btnReparto = document.getElementById("btn-reparto");
-const submenu = document.getElementById("submenu-reparto");
-
-btnReparto.addEventListener("click", () => {
-    submenu.classList.toggle("open");
-    btnReparto.classList.toggle("open");
-});
-
-/* IMPRIMIR */
-document.getElementById("btn-imprimir").addEventListener("click", async () => {
+async function imprimirCuadre() {
     try {
-        const area = document.getElementById("area-imprimir");
+        const area = document.getElementById('area-imprimir');
+
+        if (!area) {
+            alert('No se encontró el área que se desea imprimir.');
+            return;
+        }
+
+        if (typeof html2canvas !== 'function' || !window.jspdf) {
+            alert('No se encontraron las librerías necesarias para generar el PDF.');
+            return;
+        }
 
         const canvas = await html2canvas(area, {
             scale: 2,
             useCORS: true,
-            backgroundColor: "#ffffff"
+            backgroundColor: '#ffffff'
         });
 
         const { jsPDF } = window.jspdf;
 
         const pdf = new jsPDF({
-            orientation: "landscape",
-            unit: "mm",
-            format: "a4"
+            orientation: 'landscape',
+            unit: 'mm',
+            format: 'a4'
         });
 
         const pageWidth = pdf.internal.pageSize.getWidth();
@@ -548,21 +860,21 @@ document.getElementById("btn-imprimir").addEventListener("click", async () => {
         const y = (pageHeight - alto) / 2;
 
         pdf.addImage(
-            canvas.toDataURL("image/png"),
-            "PNG",
+            canvas.toDataURL('image/png'),
+            'PNG',
             x,
             y,
             ancho,
             alto
         );
 
-        const pdfBlob = pdf.output("blob");
+        const pdfBlob = pdf.output('blob');
         const pdfUrl = URL.createObjectURL(pdfBlob);
 
-        window.open(pdfUrl, "_blank");
+        window.open(pdfUrl, '_blank');
 
     } catch (error) {
         console.error(error);
-        alert("Error al generar el PDF: " + error.message);
+        alert('Error al generar el PDF: ' + error.message);
     }
-});
+}
